@@ -1,0 +1,80 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>Xitorque Accessories</title>
+<style>
+:root{--bg:#f4f6f5;--c:#fff;--t:#16201d;--m:#5d6b66;--a:#0b6b5c;--b:#dbe2df;--r:#b42318;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media(prefers-color-scheme:dark){:root:not([data-theme=light]){--bg:#0e1513;--c:#16201d;--t:#ecf2ef;--m:#93a39d;--a:#3ecfb2;--b:#26332f;--r:#f97066}}
+:root[data-theme=dark]{--bg:#0e1513;--c:#16201d;--t:#ecf2ef;--m:#93a39d;--a:#3ecfb2;--b:#26332f;--r:#f97066}
+*{box-sizing:border-box}html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--t);font:15px/1.4 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+main{max-width:640px;margin:auto;padding:10px 12px 80px}
+#nav{position:sticky;top:env(safe-area-inset-top,0px);background:var(--bg);display:flex;gap:6px;overflow-x:auto;padding:8px 12px;z-index:5;border-bottom:1px solid var(--b)}
+button,input,select{font:inherit;color:var(--t)}
+button{border:1px solid var(--b);background:var(--c);border-radius:8px;padding:8px 12px;white-space:nowrap;cursor:pointer}
+button.on,button.p{background:var(--a);color:var(--bg);border-color:var(--a);font-weight:600}
+input,select{width:100%;padding:9px;border:1px solid var(--b);border-radius:8px;background:var(--c);margin:3px 0}
+.card{background:var(--c);border:1px solid var(--b);border-radius:10px;padding:10px;margin:8px 0}
+.row{display:flex;gap:10px;align-items:center;background:var(--c);border:1px solid var(--b);border-radius:10px;padding:8px;margin:6px 0}
+.row img,.ph{width:56px;height:56px;border-radius:8px;object-fit:cover;background:var(--b);flex:none}
+.g{flex:1;min-width:0}small{color:var(--m);display:block}
+.pr{text-align:right}.big{font-size:18px;color:var(--a)}.r{color:var(--r)}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+#toast{position:fixed;bottom:calc(20px + env(safe-area-inset-bottom,0px));left:50%;transform:translateX(-50%);background:#111;color:#fff;padding:9px 14px;border-radius:20px;opacity:0;transition:.2s;pointer-events:none;max-width:90%;text-align:center}
+</style></head><body><div id="nav"></div><main id="app"></main><div id="toast"></div>
+<script>
+const $=s=>document.querySelector(s),OW=['stock','sales','khata'],T5=[['stock','Mera Stock'],['sales','Sales'],['khata','Khata'],['shop','Shop Wale'],['cust','Customer']];
+let D={p:[],s:[],pay:[],pin:'',bk:0},V='cust',U=false,L=null,cart=[],mode='r',sel={},E=null,T=null,X=null,Q='',F=['','',''],C=null;
+try{D=Object.assign(D,JSON.parse(localStorage.getItem('xt')||'{}'))}catch(e){}
+try{const h=location.hash;if(h.startsWith('#c='))C=JSON.parse(decodeURIComponent(escape(atob(h.slice(3).replace(/-/g,'+').replace(/_/g,'/')))))}catch(e){}
+const sv=()=>{try{localStorage.setItem('xt',JSON.stringify(D))}catch(e){toast('Storage full! Backup lo')}};
+const esc=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const R=n=>'Rs '+Math.round(+n||0).toLocaleString('en-US');
+const sold=id=>D.s.reduce((a,s)=>a+s.it.filter(i=>i.id==id).reduce((b,i)=>b+i.q,0),0);
+const left=p=>p.q-sold(p.id),ct=()=>cart.reduce((a,i)=>a+i.q*i.pr,0);
+function toast(m){const t=$('#toast');t.textContent=m;t.style.opacity=1;clearTimeout(toast.h);toast.h=setTimeout(()=>t.style.opacity=0,2400)}
+function khata(){const m={};D.s.filter(s=>s.m=='w').forEach(s=>{const k=s.shop.trim().toLowerCase(),o=m[k]=m[k]||{n:s.shop,ph:s.ph,b:0};o.b+=s.tot-s.adv;o.ph=s.ph||o.ph});D.pay.forEach(x=>{const o=m[x.shop.trim().toLowerCase()];if(o)o.b-=x.amt});return Object.values(m)}
+function gate(){const v=$('#pin').value;if(!D.pin){if(v.length<4)return toast('Kam se kam 4 digit');D.pin=v;sv()}else if(v!==D.pin)return toast('Galat PIN');U=true;render()}
+function unl(){if($('#lp').value!==D.pin)return toast('Galat PIN');L=null;U=true;render()}
+function lock(m){if(!D.pin)return toast('Pehle PIN set karo');L=m;V=m;U=false;render()}
+function pic(f){if(!f)return;const im=new Image(),u=URL.createObjectURL(f);im.onload=()=>{const mk=z=>{const s=Math.min(1,z/Math.max(im.width,im.height)),c=document.createElement('canvas');c.width=im.width*s;c.height=im.height*s;c.getContext('2d').drawImage(im,0,0,c.width,c.height);return c.toDataURL('image/jpeg',z>100?.6:.4)};T={img:mk(240),th:mk(64)};$('#pv').src=T.img;URL.revokeObjectURL(u)};im.src=u}
+function saveP(){const g=i=>$('#f'+i).value.trim();if(!g('n'))return toast('Naam likho');const o={n:g('n'),c:g('c'),q:+g('q')||0,cost:+g('cost')||0,w:+g('w')||0,r:+g('r')||0};let p=E&&D.p.find(x=>x.id==E);if(p)Object.assign(p,o);else{p={id:Date.now(),img:'',th:'',...o};D.p.push(p)}if(T){p.img=T.img;p.th=T.th}T=null;E=null;sv();toast('Save ho gaya');render()}
+function ed(id){E=id;T=null;render();scrollTo(0,0)}
+function del(id){if(X!=id){X=id;return render()}D.p=D.p.filter(p=>p.id!=id);X=null;sv();render()}
+function cp(t,m){const f=()=>{const a=document.createElement('textarea');a.value=t;document.body.appendChild(a);a.select();try{document.execCommand('copy')}catch(e){}a.remove();toast(m)};navigator.clipboard?navigator.clipboard.writeText(t).then(()=>toast(m),f):f()}
+const pick=()=>{const l=D.p.filter(p=>sel[p.id]);if(!l.length)toast('Pehle products select karo');return l.length?l:null};
+function lnk(m){const l=pick();if(!l)return;const ph=$('#ph').checked,d={m,p:l.map(p=>[p.n,m=='s'?p.w:0,p.r,ph?p.th:'',p.c])},b=btoa(unescape(encodeURIComponent(JSON.stringify(d)))).replace(/\+/g,'-').replace(/\//g,'_'),u=location.href.split('#')[0]+'#c='+b;cp(u,'Link copy hua ('+Math.round(u.length/1000)+' KB) — WhatsApp pe paste karo')}
+function txt(m){const l=pick();if(!l)return;cp(l.map(p=>'• '+p.n+' — '+(m=='s'?'Wholesale '+R(p.w)+' | Retail ':'')+R(p.r)).join('\n'),'Text copy hua')}
+function keep(){if(mode=='w'&&$('#ssh'))F=[$('#ssh').value,$('#sph').value,$('#sad').value]}
+function pf(){const p=D.p.find(x=>x.id==$('#sp').value);$('#spr').value=p?(mode=='w'?p.w:p.r):''}
+function bq(){$('#bq').textContent='Baqaya: '+R(ct()-(+$('#sad').value||0))}
+function addC(){const p=D.p.find(x=>x.id==$('#sp').value);if(!p)return toast('Product chuno');const q=+$('#sq').value||1,pr=+$('#spr').value;if(!pr)return toast('Price likho');const inC=cart.filter(i=>i.id==p.id).reduce((a,i)=>a+i.q,0);if(q+inC>left(p))return toast('Sirf '+left(p)+' bachi hain');keep();cart.push({id:p.id,n:p.n,q,pr,cost:p.cost});render()}
+function rm(i){keep();cart.splice(i,1);render()}
+function bill(){if(!cart.length)return toast('Bill khali hai');keep();const t=ct(),s={id:Date.now(),t:Date.now(),m:mode,it:cart,tot:t,adv:t,shop:'',ph:''};if(mode=='w'){const sh=$('#ssh').value.trim();if(!sh)return toast('Shop ka naam likho');s.shop=sh;s.ph=$('#sph').value.trim();s.adv=Math.min(+$('#sad').value||0,t)}D.s.push(s);cart=[];F=['','',''];sv();toast('Bill save ho gaya');render()}
+function delS(id){if(X!=id){X=id;return render()}D.s=D.s.filter(s=>s.id!=id);X=null;sv();render()}
+function payR(i){const o=khata()[i],a=+$('#pa'+i).value;if(!o||!a)return toast('Amount likho');D.pay.push({shop:o.n,amt:a,t:Date.now()});sv();toast('Payment save ho gayi');render()}
+async function bk(){const t=JSON.stringify(D);D.bk=Date.now();sv();try{const d=window.claude&&await claude.use('downloads');if(d){await d.save({filename:'xitorque-backup.json',data:t});return render()}}catch(e){}const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([t],{type:'application/json'}));a.download='xitorque-backup.json';a.click();render()}
+function rs(f){if(!f)return;const r=new FileReader();r.onload=()=>{try{D=Object.assign({p:[],s:[],pay:[],pin:'',bk:0},JSON.parse(r.result));sv();toast('Restore ho gaya');render()}catch(e){toast('File sahi nahi hai')}};r.readAsText(f)}
+const card=(x,m)=>`<div class="row">${x.img?`<img src="${x.img}">`:'<div class="ph"></div>'}<div class="g"><b>${esc(x.n)}</b><small>${esc(x.c||'')}${x.st===0?' <span class="r">Out of stock</span>':m=='s'&&x.st?' · Stock '+x.st:''}</small></div><div class="pr">${m=='s'?`<small>Wholesale</small><b>${R(x.w)}</b><small>Retail</small>`:''}<b class="big">${R(x.r)}</b></div></div>`;
+function src(){return C?C.p.map(a=>({n:a[0],w:a[1],r:a[2],img:a[3],c:a[4]})):D.p.map(p=>({n:p.n,c:p.c,w:p.w,r:p.r,img:p.img,st:left(p)}))}
+function list(){const q=Q.toLowerCase(),m=C?C.m:V=='shop'?'s':'c';$('#lst').innerHTML=src().filter(x=>(x.n+' '+(x.c||'')).toLowerCase().includes(q)).map(x=>card(x,m)).join('')||'<div class="card">Koi product nahi mila</div>'}
+const pubV=()=>`<input id="q" placeholder="Search product ya category" value="${esc(Q)}" oninput="Q=this.value;list()"><div id="lst"></div>`;
+function stockV(){const e=E&&D.p.find(x=>x.id==E)||{},inv=D.p.reduce((a,p)=>a+p.cost*p.q,0),sale=D.s.reduce((a,s)=>a+s.tot,0),pf=D.s.reduce((a,s)=>a+s.it.reduce((b,i)=>b+(i.pr-i.cost)*i.q,0),0),bqa=khata().reduce((a,k)=>a+k.b,0);
+return(!D.p.length||Date.now()-D.bk<6048e5?'':'<div class="card r">Backup 7 din se purana hai — neeche Backup dabao</div>')+
+`<div class="two"><div class="card"><small>Kul investment</small><b>${R(inv)}</b></div><div class="card"><small>Kul sale</small><b>${R(sale)}</b></div><div class="card"><small>Profit</small><b>${R(pf)}</b></div><div class="card"><small>Baqaya (udhaar)</small><b>${R(bqa)}</b></div></div>
+<div class="card"><b>${E?'Product edit karo':'Naya product'}</b><input id="fn" placeholder="Naam" value="${esc(e.n)}"><input id="fc" placeholder="Category (charger, cable...)" value="${esc(e.c)}"><div class="two"><input id="fq" type="number" placeholder="Kitni li" value="${e.q??''}"><input id="fcost" type="number" placeholder="Cost price" value="${e.cost??''}"><input id="fw" type="number" placeholder="Wholesale price" value="${e.w??''}"><input id="fr" type="number" placeholder="Retail price" value="${e.r??''}"></div><input type="file" accept="image/*" onchange="pic(this.files[0])"><img id="pv" width="56" ${e.img?`src="${e.img}"`:''}><div class="two"><button class="p" onclick="saveP()">Save & next</button>${E?'<button onclick="E=null;render()">Cancel</button>':''}</div></div>
+<div class="card"><b>Share: products select karo</b><label><input type="checkbox" id="ph" checked style="width:auto"> Link mein photo</label><div class="two"><button onclick="lnk('c')">Customer Link</button><button onclick="lnk('s')">Shop Link</button><button onclick="txt('c')">Customer Text</button><button onclick="txt('s')">Shop Text</button></div></div>`+
+(D.p.map(p=>`<div class="row"><input type="checkbox" style="width:auto" ${sel[p.id]?'checked':''} onchange="sel[${p.id}]=this.checked">${p.img?`<img src="${p.img}">`:'<div class="ph"></div>'}<div class="g"><b>${esc(p.n)}</b><small>Li ${p.q} · Bik ${sold(p.id)} · Bachi <b class="${left(p)<=2?'r':''}">${left(p)}</b></small><small>Cost ${R(p.cost)} · W ${R(p.w)} · R ${R(p.r)} · Profit/pc ${R(p.r-p.cost)}</small></div><div><button onclick="ed(${p.id})">Edit</button><button onclick="del(${p.id})">${X==p.id?'Pakka?':'Delete'}</button></div></div>`).join('')||'<div class="card">Abhi koi product nahi. Upar se add karo.</div>')+
+`<div class="card"><b>Backup</b><small>Data sirf isi phone/browser mein hai. Hafte mein ek baar backup lo.</small><div class="two"><button onclick="bk()">Backup download</button><input type="file" accept=".json" onchange="rs(this.files[0])"></div></div>`}
+function salesV(){return`<div class="two"><button class="${mode=='r'?'on':''}" onclick="keep();mode='r';render()">Retail</button><button class="${mode=='w'?'on':''}" onclick="keep();mode='w';render()">Wholesale</button></div>
+<div class="card"><select id="sp" onchange="pf()"><option value="">Product chuno</option>${D.p.filter(p=>left(p)>0).map(p=>`<option value="${p.id}">${esc(p.n)} (bachi ${left(p)})</option>`).join('')}</select><div class="two"><input id="sq" type="number" value="1" placeholder="Qty"><input id="spr" type="number" placeholder="Price"></div><button class="p" onclick="addC()">+ Bill mein add karo</button></div>`+
+cart.map((i,k)=>`<div class="row"><div class="g"><b>${esc(i.n)}</b><small>${i.q} × ${R(i.pr)}</small></div><b>${R(i.q*i.pr)}</b><button onclick="rm(${k})">✕</button></div>`).join('')+
+`<div class="card"><b>Total ${R(ct())}</b>${mode=='w'?`<input id="ssh" placeholder="Shop ka naam" value="${esc(F[0])}"><input id="sph" type="tel" placeholder="Number" value="${esc(F[1])}"><input id="sad" type="number" placeholder="Advance payment" value="${esc(F[2])}" oninput="bq()"><b id="bq">Baqaya: ${R(ct()-(+F[2]||0))}</b>`:''}<button class="p" onclick="bill()">Bill save karo</button></div>
+<b>Pichli sales</b>`+(D.s.slice(-10).reverse().map(s=>`<div class="row"><div class="g"><b>${s.m=='w'?esc(s.shop):'Retail'} · ${R(s.tot)}</b><small>${new Date(s.t).toLocaleDateString()} · ${esc(s.it.map(i=>i.n+' ×'+i.q).join(', '))}${s.m=='w'&&s.tot>s.adv?' · Advance '+R(s.adv):''}</small></div><button onclick="delS(${s.id})">${X==s.id?'Pakka?':'Cancel bill'}</button></div>`).join('')||'<div class="card">Abhi koi sale nahi.</div>')}
+function khataV(){const k=khata().map((o,i)=>({...o,i})).filter(o=>o.b>0);return`<div class="card"><small>Kul baqaya</small><b class="big">${R(k.reduce((a,o)=>a+o.b,0))}</b></div>`+(k.map(o=>`<div class="card"><b>${esc(o.n)}</b><small>${o.ph?`<a href="tel:${esc(o.ph)}">${esc(o.ph)}</a>`:'Number nahi'}</small><b class="r">Baqaya ${R(o.b)}</b><div class="two"><input id="pa${o.i}" type="number" placeholder="Payment mili"><button class="p" onclick="payR(${o.i})">Payment save</button></div></div>`).join('')||'<div class="card">Koi udhaar baqi nahi.</div>')}
+function render(){const a=$('#app'),n=$('#nav');
+if(C){n.innerHTML='';a.innerHTML='<h2>Price List</h2>'+pubV();return list()}
+if(L){n.innerHTML='';a.innerHTML=pubV()+`<div class="card"><small>Unlock ke liye PIN</small><div class="two"><input id="lp" type="password" inputmode="numeric" placeholder="PIN"><button onclick="unl()">Unlock</button></div></div>`;return list()}
+n.innerHTML=T5.map(([k,t])=>`<button class="${V==k?'on':''}" onclick="V='${k}';render()">${t}</button>`).join('')+(U?`<button onclick="lock('shop')">🔒 Shop</button><button onclick="lock('cust')">🔒 Customer</button>`:'');
+if(OW.includes(V)&&!U){a.innerHTML=`<div class="card"><b>${D.pin?'PIN daalo':'Naya PIN set karo (4+ digit)'}</b><input id="pin" type="password" inputmode="numeric"><button class="p" onclick="gate()">OK</button></div>`;return}
+a.innerHTML=V=='stock'?stockV():V=='sales'?salesV():V=='khata'?khataV():pubV();if(V=='shop'||V=='cust')list()}
+try{navigator.storage&&navigator.storage.persist&&navigator.storage.persist()}catch(e){}
+render();
+</script></body></html>
