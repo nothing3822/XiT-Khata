@@ -6,10 +6,62 @@
   "start_url": "./",
   "scope": "./",
   "display": "standalone",
+  "display_override": [
+    "standalone",
+    "minimal-ui"
+  ],
   "orientation": "portrait",
   "background_color": "#0b0d12",
   "theme_color": "#1d4ed8",
   "lang": "en",
+  "dir": "ltr",
+  "categories": [
+    "business",
+    "finance",
+    "productivity"
+  ],
+  "prefer_related_applications": false,
+  "launch_handler": {
+    "client_mode": "navigate-existing"
+  },
+  "shortcuts": [
+    {
+      "name": "Naya Bill (Sales)",
+      "short_name": "Sales",
+      "url": "./?go=sales",
+      "icons": [
+        {
+          "src": "icon-192.png",
+          "sizes": "192x192",
+          "type": "image/png"
+        }
+      ]
+    },
+    {
+      "name": "Naya Stock",
+      "short_name": "New Stock",
+      "url": "./?go=stock",
+      "icons": [
+        {
+          "src": "icon-192.png",
+          "sizes": "192x192",
+          "type": "image/png"
+        }
+      ]
+    },
+    {
+      "name": "Dashboard",
+      "short_name": "Dashboard",
+      "url": "./?go=dash",
+      "icons": [
+        {
+          "src": "icon-192.png",
+          "sizes": "192x192",
+          "type": "image/png"
+        }
+      ]
+    }
+  ],
   "icons": [
     {
       "src": "icon-192.png",
