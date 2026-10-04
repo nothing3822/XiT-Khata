@@ -140,7 +140,6 @@ const GROUPS=[['dash','Dashboard','📊',[['dash','Dashboard']]],['sales','Sales
 const grp=v=>GROUPS.find(g=>g[3].some(t=>t[0]==v)),subB=()=>{const g=grp(V);return g&&g[3].length>1?`<div class="sub">${g[3].map(t=>`<button class="${V==t[0]?'on':''}" onclick="V='${t[0]}';render()">${t[1]}</button>`).join('')}</div>`:''};
 const az=l=>l.slice().sort((a,b)=>a.n.localeCompare(b.n,undefined,{sensitivity:'base'})),srt=l=>SM=='new'?l.slice().sort((a,b)=>b.id-a.id):SM=='low'?l.slice().sort((a,b)=>left(a)-left(b)):az(l);
 const sNo=e=>e.no?'ST-'+String(e.no).padStart(4,'0'):'',sups=()=>[...new Set(ST().map(e=>e.sup).filter(Boolean))].map(n=>`<option value="${esc(n)}">`).join('');
-ST().filter(e=>!e.no).sort((a,b)=>a.t-b.t).forEach(e=>{e.no=Math.max(0,...ST().map(z=>z.no||0))+1});D.s.filter(e=>!e.no).sort((a,b)=>a.t-b.t).forEach(e=>{e.no=Math.max(0,...D.s.map(z=>z.no||0))+1});
 function rimg(m){const b=D.bi||{},W=600,H=430+m.rows.length*40+m.ex.length*32+(m.ti?28:0)+(m.party?28:0)+(b.ph?26:0)+(b.ad?26:0),c=document.createElement('canvas');c.width=W;c.height=H;const x=c.getContext('2d');x.fillStyle='#fff';x.fillRect(0,0,W,H);let y=30;
 x.fillStyle='#7c3aed';x.beginPath();x.arc(W/2,y+34,34,0,7);x.fill();x.fillStyle='#fff';x.font='italic 800 26px Georgia,serif';x.textAlign='center';x.fillText('XiT',W/2,y+43);y+=96;
 x.fillStyle='#111';x.font='bold 26px sans-serif';x.fillText(bName(),W/2,y);y+=30;x.font='18px sans-serif';x.fillStyle='#555';[b.ph,b.ad].forEach(t=>{if(t){x.fillText(t,W/2,y);y+=26}});if(m.ti){x.fillStyle='#111';x.font='bold 19px sans-serif';x.fillText(m.ti,W/2,y+6);y+=28}y+=6;
@@ -222,5 +221,7 @@ hb(1);if(V!='add')CP=null;{const g=grp(V);if(g)GL[g[0]]=V}$('#dw').innerHTML='<d
 if(OW.includes(V)&&!U&&!off){a.innerHTML=`<div class="card"><b>${D.pin?'PIN daalo':'Naya PIN set karo (4+ digit)'}</b><input id="pin" type="password" inputmode="numeric"><button class="p" onclick="gate()">OK</button></div>`;return}
 a.innerHTML=subB()+(OW.includes(V)?inB()+warn():'')+({dash:dashV,stock:stockV,cli:cliV,cat:catV,hist:hiV,xp:exV,sh:histV,lnk:lnkV,prod:prodV,add:addV,sales:salesV,khata:khataV,set:setTabV,shop:pubV,cust:pubV}[V])();if(V=='shop'||V=='cust')list();if(V=='prod')plist();if(V=='sales'){spl();bl()}hl();ll();if(V=='stock'){nl();nt()}}
 try{navigator.storage&&navigator.storage.persist&&navigator.storage.persist()}catch(e){}
+// Run legacy receipt numbering only after all helpers are initialized.
+ST().filter(e=>!e.no).sort((a,b)=>a.t-b.t).forEach(e=>{e.no=Math.max(0,...ST().map(z=>z.no||0))+1});D.s.filter(e=>!e.no).sort((a,b)=>a.t-b.t).forEach(e=>{e.no=Math.max(0,...D.s.map(z=>z.no||0))+1});
 boot();
 </script></body></html>
