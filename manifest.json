@@ -1,8 +1,8 @@
 {
   "id": "./",
-  "name": "XiTorque Khata",
-  "short_name": "XiT Khata",
-  "description": "Mobile accessories stock, sales aur khata manager by XiTorque Studio",
+  "name": "Tijarat",
+  "short_name": "Tijarat",
+  "description": "Tijarat: dukan ka poora hisaab (stock, sales, khata, reports)",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",
@@ -11,8 +11,8 @@
     "minimal-ui"
   ],
   "orientation": "portrait",
-  "background_color": "#0b0d12",
-  "theme_color": "#1d4ed8",
+  "background_color": "#0B1220",
+  "theme_color": "#0F172A",
   "lang": "en",
   "dir": "ltr",
   "categories": [
